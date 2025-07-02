@@ -1,19 +1,20 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 
-# ----- Ventana principal -----
+# ventana principal
 root = tk.Tk()
 root.title("AGRO.MAX")
 root.geometry("400x600")
 root.configure(bg="white")
 
+# contenedores
 main_frame = tk.Frame(root, bg="white")
 main_frame.pack(fill="both", expand=True)
 
 bottom_nav = tk.Frame(root, bg="white", height=60, bd=1, relief="raised")
 bottom_nav.pack(side="bottom", fill="x")
 
-# ----- Cargar iconos -----
+# funciones para cargar imágenes
 def load_icon(path, size=(30, 30)):
     try:
         image = Image.open(path)
@@ -32,24 +33,25 @@ def load_product_image(path, size=(80, 80)):
         print(f"Error al cargar imagen de producto '{path}': {e}")
         return None
 
+# íconos
 icon_inicio = load_icon("inicio.png")
 icon_categorias = load_icon("lupa.png")
 icon_tu = load_icon("usuario.png")
 icon_carrito = load_icon("carrito.png")
 
-# ----- Datos de productos -----
+# datos
 productos_disponibles = [
     {"nombre": "Comida para Gatos", "precio": "15000", "imagen": "ringogato.png"},
     {"nombre": "Comida para Perro", "precio": "25000", "imagen": "perro.png"},
     {"nombre": "Comida para Gatos pequeños", "precio": "10000", "imagen": "gato_pequeño.png"},
     {"nombre": "Comida para Cachorros", "precio": "20000", "imagen": "perros_pequeños.png"},
 ]
-
 carrito = []
 
-# ----- Funciones comunes -----
+# estilo de botones
 button_style = {"bd": 0, "bg": "white", "activebackground": "white", "fg": "black"}
 
+# funciones generales
 def set_active(btn):
     for b in [btn_inicio, btn_categorias, btn_tu, btn_carrito]:
         b.config(bg="white", fg="black")
@@ -59,6 +61,7 @@ def limpiar_contenido():
     for widget in main_frame.winfo_children():
         widget.destroy()
 
+# mostrar producto
 def add_product_to_catalog(parent_frame, image_path, name, price, product_dict=None, en_carrito=False):
     frame = tk.Frame(parent_frame, bg="white", bd=1, relief="solid", padx=10, pady=10)
     frame.pack(pady=5, padx=10, fill="x")
@@ -86,7 +89,7 @@ def add_product_to_catalog(parent_frame, image_path, name, price, product_dict=N
             print(f"{name} agregado al carrito.")
         tk.Button(info_frame, text="Comprar", command=comprar, bg="#c8e6c9", fg="black").pack(anchor="e", pady=5)
 
-# ----- Catálogo principal -----
+# mostrar catálogo
 def mostrar_catalogo(filtrados=None):
     limpiar_contenido()
     lista = filtrados if filtrados is not None else productos_disponibles
@@ -97,7 +100,7 @@ def mostrar_catalogo(filtrados=None):
         for prod in lista:
             add_product_to_catalog(main_frame, prod["imagen"], prod["nombre"], prod["precio"], product_dict=prod)
 
-# ----- Navegación -----
+# navegación
 def go_inicio():
     set_active(btn_inicio)
     mostrar_catalogo()
@@ -109,7 +112,6 @@ def go_categorias():
     tk.Label(main_frame, text="Buscar productos:", font=("Arial", 12), bg="white").pack(pady=10)
 
     search_var = tk.StringVar()
-
     entry = tk.Entry(main_frame, textvariable=search_var, font=("Arial", 12), width=30)
     entry.pack(pady=5)
 
@@ -125,19 +127,15 @@ def go_tu():
     limpiar_contenido()
 
     tk.Label(main_frame, text="Perfil de Usuario", font=("Arial", 16, "bold"), bg="white").pack(pady=10)
-
-    # Datos de usuario (puedes cargarlos dinámicamente luego)
     tk.Label(main_frame, text="Nombre: Kevin Garcia", font=("Arial", 12), bg="white").pack(pady=2)
     tk.Label(main_frame, text="Correo: kevin@gmail.com", font=("Arial", 12), bg="white").pack(pady=2)
 
-    # Botón editar (por ahora solo muestra un mensaje)
     def editar_usuario():
         tk.messagebox.showinfo("Editar", "Funcionalidad para editar perfil aún no implementada.")
 
     tk.Button(main_frame, text="Editar perfil", command=editar_usuario,
               bg="#bbdefb", fg="black", font=("Arial", 11)).pack(pady=10)
 
-    # Botón cerrar sesión (opcional)
     def cerrar_sesion():
         tk.messagebox.showinfo("Sesión cerrada", "Has cerrado sesión.")
         go_inicio()
@@ -168,7 +166,7 @@ def go_carrito():
 
         tk.Button(main_frame, text="Pagar", command=pagar, bg="#a5d6a7", font=("Arial", 11)).pack(pady=5)
 
-# ----- Botones navegación -----
+# botones de navegación
 btn_inicio = tk.Button(bottom_nav, image=icon_inicio, text="Inicio", compound="top", command=go_inicio, **button_style)
 btn_inicio.pack(side="left", expand=True)
 
@@ -181,8 +179,7 @@ btn_tu.pack(side="left", expand=True)
 btn_carrito = tk.Button(bottom_nav, image=icon_carrito, text="Carrito", compound="top", command=go_carrito, **button_style)
 btn_carrito.pack(side="left", expand=True)
 
-# ----- Inicio -----
+# iniciar app
 set_active(btn_inicio)
 mostrar_catalogo()
-
 root.mainloop()
